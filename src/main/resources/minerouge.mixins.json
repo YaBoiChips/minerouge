@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "yaboichips.minerouge.mixin",
+  "compatibilityLevel": "JAVA_8",
+  "refmap": "minerouge.refmap.json",
+  "mixins": [
+    "ServerLevelMixin"
+  ],
+  "client": [
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

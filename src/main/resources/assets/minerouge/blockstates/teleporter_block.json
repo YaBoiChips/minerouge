@@ -1,0 +1,7 @@
+{
+  "variants": {
+    "": {
+      "model": "minerouge:block/teleporter_block"
+    }
+  }
+}
