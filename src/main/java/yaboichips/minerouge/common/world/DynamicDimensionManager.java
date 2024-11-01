@@ -227,7 +227,7 @@ public class DynamicDimensionManager{
             // update the server's levels so dead levels don't get ticked
             server.markWorldsDirty();
             // client will need to be notified of the removed level for the dimension command suggester
-            PacketSyncDimensionListChanges.updateClientDimensionLists(server, ImmutableSet.of(), removedLevelKeys);
+//            PacketSyncDimensionListChanges.updateClientDimensionLists(server, ImmutableSet.of(), removedLevelKeys);
         }
     }
 
@@ -312,7 +312,7 @@ public class DynamicDimensionManager{
         MinecraftForge.EVENT_BUS.post(new LevelEvent.Load(newWorld));
 
         // update clients' dimension lists
-        PacketSyncDimensionListChanges.updateClientDimensionLists(server, ImmutableSet.of(worldKey), ImmutableSet.of());
+//        PacketSyncDimensionListChanges.updateClientDimensionLists(server, ImmutableSet.of(worldKey), ImmutableSet.of());
 
         return newWorld;
     }

@@ -11,9 +11,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 public interface MinerPacket extends CustomPacketPayload {
-    List<Handler<?>> PACKETS = Util.make(new ArrayList<>(), list -> {
-        list.add(new Handler<>(PacketSyncDimensionListChanges.TYPE, PacketSyncDimensionListChanges.PacketDirection.SERVER_TO_CLIENT, PacketSyncDimensionListChanges.CODEC, PacketSyncDimensionListChanges::handle));
-    });
+//    List<Handler<?>> PACKETS = Util.make(new ArrayList<>(), list -> {
+//        list.add(new Handler<>(PacketSyncDimensionListChanges.TYPE, PacketSyncDimensionListChanges.PacketDirection.SERVER_TO_CLIENT, PacketSyncDimensionListChanges.STREAM_CODEC, PacketSyncDimensionListChanges::handle));
+//    });
 
 
     void handle(Level level, Player player);

@@ -20,27 +20,31 @@ import yaboichips.minerouge.common.world.DynamicDimensionManager;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.stream.Collectors;
 
 public record PacketSyncDimensionListChanges(Set<ResourceKey<Level>> newDimensions, Set<ResourceKey<Level>> removedDimensions) implements MinerPacket {
 
     public static final Type<PacketSyncDimensionListChanges> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(MineRouge.MODID, "syncdimensionlistchanges"));
 
-    public static final StreamCodec<RegistryFriendlyByteBuf, PacketSyncDimensionListChanges> CODEC = StreamCodec.composite(
-            ByteBufCodecs.fromCodec(Data.CODEC), PacketSyncDimensionListChanges::data,
-            PacketSyncDimensionListChanges::new
-    );
-
-    public static final StreamCodec<ByteBuf, PacketSyncDimensionListChanges> STREAM_CODEC = StreamCodec.composite(
-            ByteBufCodecs.list().,
-            PacketSyncDimensionListChanges::newDimensions,
-            ByteBufCodecs.VAR_INT,
-            PacketSyncDimensionListChanges::removedDimensions,
-            PacketSyncDimensionListChanges::new
-    );
+//    public static final StreamCodec<RegistryFriendlyByteBuf, PacketSyncDimensionListChanges> STREAM_CODEC = StreamCodec.composite(
+////            ByteBufCodecs.fromCodec(),
+//            PacketSyncDimensionListChanges::newDimensions,
+//            ByteBufCodecs.VAR_INT,
+//            PacketSyncDimensionListChanges::removedDimensions,
+//            PacketSyncDimensionListChanges::new
+//    );
 
     public PacketSyncDimensionListChanges(final Set<ResourceKey<Level>> newDimensions, final Set<ResourceKey<Level>> removedDimensions) {
         this.newDimensions = newDimensions;
         this.removedDimensions = removedDimensions;
+    }
+
+    public Set<ResourceKey<Level>> getNewDimensions() {
+        return newDimensions;
+    }
+
+    public Set<ResourceKey<Level>> getRemovedDimensions() {
+        return removedDimensions;
     }
 
     public void write(FriendlyByteBuf buf) {
@@ -96,20 +100,25 @@ public record PacketSyncDimensionListChanges(Set<ResourceKey<Level>> newDimensio
      * when that's used to add or remove dynamic dimensions,
      * so mods shouldn't need to call this themselves
      */
-    public static void updateClientDimensionLists(MinecraftServer server, Set<ResourceKey<Level>> newDimensions, Set<ResourceKey<Level>> removedDimensions) {
-        ForgeNetworkHandler.sendToAllPlayers(server.getPlayerList().getPlayers(), new PacketSyncDimensionListChanges(newDimensions, removedDimensions));
-    }
+//    public static void updateClientDimensionLists(MinecraftServer server, Set<ResourceKey<Level>> newDimensions, Set<ResourceKey<Level>> removedDimensions) {
+//        ForgeNetworkHandler.sendToAllPlayers(server.getPlayerList().getPlayers(), new PacketSyncDimensionListChanges(newDimensions, removedDimensions));
+//    }
 
     @Override
     public Type<? extends CustomPacketPayload> type() {
         return TYPE;
     }
 
-    public record Data(Set<ResourceKey<Level>> newDimensions, Set<ResourceKey<Level>> removedDimensions) {
-        public static final Codec<Data> CODEC = RecordCodecBuilder.create(builder ->
-                builder.group(
-                        Codec.LONG.fieldOf("last_checked_game_time").forGetter(Data::lastCheckedGameTime)
-                ).apply(builder, Data::new)
-        );
+    public record Data(Set<ResourceKey<Level>> newDimensions, Set<ResourceKey<Level>> removedDimension) {
+        static Codec<Set<ResourceKey<Level>>> setCodec = ResourceLocation.CODEC
+                .xmap(loc -> ResourceKey.create(Registries.DIMENSION, loc), ResourceKey::location)
+                .listOf()
+                .xmap(HashSet::new, set -> set.stream().collect(Collectors.toList()));
+//        public static final Codec<Data> CODEC = RecordCodecBuilder.create(builder ->
+//                builder.group(
+//                        setCodec.fieldOf("newDimension").forGetter(PacketSyncDimensionListChanges::getNewDimensions),
+//                        setCodec.fieldOf("removedDimension").forGetter(PacketSyncDimensionListChanges::getRemovedDimensions)
+//                ).apply(builder, Data::new)
+//        );
     }
 }
