@@ -71,8 +71,6 @@ public class MineRouge {
     private void commonSetup(final FMLCommonSetupEvent event) {
     }
 
-
-
     // Add the example block item to the building blocks tab
     private void addCreative(BuildCreativeModeTabContentsEvent event) {
         if (event.getTabKey() == CreativeModeTabs.BUILDING_BLOCKS)

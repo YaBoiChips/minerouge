@@ -60,12 +60,10 @@ public class CanonEntity extends Mob implements PlayerRideable, GeoEntity {
 
         tickCounter++;
 
-        // First 3 seconds: play the lever click sound with increasing pitch every second
         if (tickCounter < 60) {
             float pitch = 1.0F + (tickCounter / 20.0F) * 0.1F; // Increases pitch slightly each second
             targetPlayer.level().playSound(null, this.getFirstPassenger().blockPosition(), SoundEvents.LEVER_CLICK, SoundSource.PLAYERS, 1.0F, pitch);
         }
-        // After 3 seconds (60 ticks), launch the player
         else if (tickCounter == 60) {
             targetPlayer.stopRiding();
             targetPlayer.level().playSound(null, targetPlayer.blockPosition(), SoundEvents.GENERIC_EXPLODE.get(), SoundSource.PLAYERS, 1.0F, 1.0F);
@@ -75,7 +73,6 @@ public class CanonEntity extends Mob implements PlayerRideable, GeoEntity {
             targetPlayer.connection.send(new ClientboundSetEntityMotionPacket(targetPlayer.getId(), launchVelocity)); // Send packet to sync with client
             targetPlayer.setDeltaMovement(launchVelocity); // Launch player upwards
         }
-        // After 8 seconds (160 ticks), teleport the player to the End at coordinates (0, 300, 0)
         else if (tickCounter == 160) {
             teleportToEnd(targetPlayer);
             reset();
